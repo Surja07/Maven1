@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('continous download') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Surja07/Maven1.git'
+            }
+        }
+
+        stage('continous build') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage ('continous deployment') {
+            steps {
+                sh 'scp /var/lib/jenkins/workspace/Declar6/HelloWorld.java ubuntu@172.31.9.223:/var/lib/tomcat10/webapps/'
+            }
+        }
+
+        stage ('continous testing with java and compile') {
+            steps {
+   sh '''
+                    javac /var/lib/jenkins/workspace/Declar6/HelloWorld.java
+                    java -cp /var/lib/jenkins/workspace/Declar6 HelloWorld
+                '''
+    }
+}
+
+        stage ('continous relase') {
+            steps {
+                sh '''
+                    scp /var/lib/jenkins/workspace/Declar6/HelloWorld.java ubuntu@172.31.12.169:/var/lib/tomcat10/webapps/
+                '''
+            }
+        }
+    }
+}
